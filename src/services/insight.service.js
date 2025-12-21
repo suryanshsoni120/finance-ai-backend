@@ -10,7 +10,7 @@ exports.generateInsights = async (payload) => {
 
     try {
         const response = await axios.post(
-            `${AI_SERVICE_URL}/ai/generate-insights`,
+            `${AI_SERVICE_URL}/generate-insights`,
             payload,
             {
                 timeout: 5000 // prevents backend hanging forever
