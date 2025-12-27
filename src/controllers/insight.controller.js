@@ -1,7 +1,7 @@
-const { generateInsights } = require("../services/insight.service");
+const mongoose = require("mongoose");
 const Transaction = require("../models/transaction.model");
 const Budget = require("../models/budget.model");
-const mongoose = require("mongoose");
+const { generateInsights } = require("../services/insight.service");
 
 exports.getMonthlyInsights = async (req, res) => {
     try {
@@ -34,9 +34,9 @@ exports.getMonthlyInsights = async (req, res) => {
         });
 
         const summary = {
-            income,
-            expense,
-            savings: income - expense
+            income: Number(income),
+            expense: Number(expense),
+            savings: Number(income - expense)
         };
 
         // Category breakdown
@@ -86,17 +86,25 @@ exports.getMonthlyInsights = async (req, res) => {
         }
 
         // AI Insights
-        const insights = await generateInsights({
+        const insightsPayload = {
             summary,
             breakdown: breakdownAgg.slice(0, 5).map(b => ({
-                category: b._id,
-                total: b.total
+                category: String(b._id),
+                total: Number(b.total)
             })),
-            alerts: alerts.slice(0, 5)
-        });
+            alerts: alerts.slice(0, 5).map(a => ({
+                type: String(a.type),
+                category: a.category ? String(a.category) : null
+            }))
+        };
+
+        const insights = await generateInsights(insightsPayload);
 
         res.json({ insights });
     } catch (error) {
-        res.status(500).json({ message: "Failed to generate insights", error });
+        res.status(500).json({
+            message: "Failed to generate insights",
+            error: error.message
+        });
     }
 };
