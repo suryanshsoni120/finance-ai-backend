@@ -13,7 +13,7 @@ exports.generateInsights = async (payload) => {
             `${AI_SERVICE_URL}/generate-insights`,
             payload,
             {
-                timeout: 5000 // prevents backend hanging forever
+                timeout: 20000 // prevents backend hanging forever
             }
         );
 
