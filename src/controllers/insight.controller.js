@@ -40,7 +40,7 @@ exports.getMonthlyInsights = async (req, res) => {
         };
 
         // Category breakdown
-        const breakdown = await Transaction.aggregate([
+        const breakdownAgg = await Transaction.aggregate([
             {
                 $match: {
                     user: new mongoose.Types.ObjectId(req.user),
@@ -66,14 +66,14 @@ exports.getMonthlyInsights = async (req, res) => {
 
         const alerts = [];
         if (budget) {
-            const totalSpent = breakdown.reduce((s, b) => s + b.total, 0);
+            const totalSpent = breakdownAgg.reduce((s, b) => s + b.total, 0);
 
             if (totalSpent > budget.totalBudget) {
                 alerts.push({ type: "OVERALL" });
             }
 
             if (budget.categoryBudgets) {
-                breakdown.forEach(b => {
+                breakdownAgg.forEach(b => {
                     const limit = budget.categoryBudgets.get(b._id);
                     if (limit && b.total > limit) {
                         alerts.push({
@@ -88,8 +88,11 @@ exports.getMonthlyInsights = async (req, res) => {
         // AI Insights
         const insights = await generateInsights({
             summary,
-            breakdown,
-            alerts
+            breakdown: breakdownAgg.slice(0, 5).map(b => ({
+                category: b._id,
+                total: b.total
+            })),
+            alerts: alerts.slice(0, 5)
         });
 
         res.json({ insights });
