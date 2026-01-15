@@ -11,7 +11,7 @@ exports.predictCategory = async (description) => {
   try {
     const response = await axios.post(
       `${AI_SERVICE_URL}/predict-category`,
-      description,
+      { description },
       {
         timeout: 5000 // prevents backend hanging forever
       }

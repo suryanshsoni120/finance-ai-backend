@@ -8,12 +8,13 @@ const analyticsRoutes = require("./routes/analytics.routes");
 const budgetRoutes = require("./routes/budget.routes");
 const insightRoutes = require("./routes/insight.routes");
 const savingsGoalsRoutes = require("./routes/savingsGoals.routes");
+const statementRoutes = require("./routes/statement.routes");
 
 const app = express();
 
 app.use(
   cors({
-    origin: "https://myfinance-ai.vercel.app",
+    origin: "http://localhost:5173",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
@@ -33,5 +34,6 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/budgets", budgetRoutes);
 app.use("/api/insights", insightRoutes);
 app.use("/api/savings-goals", savingsGoalsRoutes);
+app.use("/api/statements", statementRoutes);
 
 module.exports = app;
