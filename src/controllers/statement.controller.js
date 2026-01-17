@@ -32,10 +32,23 @@ exports.confirmStatement = async (req, res) => {
             return res.status(400).json({ message: "Too many rows" });
         }
 
-        const docs = transactions.map(t => ({
-            user: req.user,
-            ...t
-        }));
+        const docs = [];
+
+        for (const transaction of transactions) {
+            const exists = await Transaction.findOne({
+                user: req.user,
+                date: transaction.date,
+                amount: transaction.amount,
+                description: transaction.description
+            });
+
+            if (!exists) {
+                docs.push({
+                    user: req.user,
+                    ...transaction
+                });
+            }
+        }
 
         await Transaction.insertMany(docs);
 

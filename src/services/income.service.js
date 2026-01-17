@@ -10,12 +10,11 @@ const INCOME_KEYWORDS = {
 exports.predictIncomeCategory = (description = "") => {
   const text = description.toLowerCase();
 
-  if (text.includes("salary")) return "Salary";
-  if (text.includes("interest")) return "Interest";
-  if (text.includes("cashback")) return "Cashback";
-  if (text.includes("refund")) return "Refund";
-  if (text.includes("bonus")) return "Bonus";
-  if (text.includes("dividend")) return "Dividend";
+  for (const [category, keywords] of Object.entries(INCOME_KEYWORDS)) {
+    if (keywords.some(k => text.includes(k))) {
+      return category;
+    }
+  }
 
   return "Other Income";
 }
