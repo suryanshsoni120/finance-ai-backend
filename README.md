@@ -1,4 +1,3 @@
-# 📘 `finance-ai-backend`
 # FinanceAI Backend
 
 Backend service for **FinanceAI**, handling authentication, transactions,
